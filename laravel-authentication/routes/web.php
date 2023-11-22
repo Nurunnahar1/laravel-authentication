@@ -15,6 +15,9 @@ Route::get('/registration',[UserController::class, 'registrationPage'])->name('r
 Route::post('/registration',[UserController::class, 'registration'])->name('registration');
 Route::get('/registration/verification/{token}/{email}',[UserController::class, 'registrationVerify']);
 
-Route::get('/forget-password',[UserController::class, 'forgetPassword'])->name('forget.paassword');
+Route::get('/forget-password',[UserController::class, 'forgetPasswordPage'])->name('forget.paassword.page');
+Route::post('/forget-password',[UserController::class, 'forgetPassword'])->name('forget.paassword');
+Route::post('/reset-password',[UserController::class, 'resetPassword'])->name('reset.paassword');
+
 Route::get('/logout',[UserController::class, 'logout']) ;
 

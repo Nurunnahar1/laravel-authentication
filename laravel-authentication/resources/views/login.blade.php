@@ -16,7 +16,7 @@
                </div>
 
                 <button type="submit" class="btn btn-primary">Submit</button>
-               <button> <a class="nav-link  text-white btn btn-primary " href="{{ route('forget.paassword') }}">Back to Login</a></button>
+               <button> <a class="nav-link  text-white btn btn-primary " href="{{ route('forget.paassword.page') }}">Forget Password!!</a></button>
 
             </form>
         </div>

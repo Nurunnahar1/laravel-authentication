@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ResetPasswordMail;
 use App\Models\User;
 use App\Mail\UserMail;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class UserController extends Controller
     function registrationPage(){
         return view('registration');
     }
-    function forgetPassword(){
+    function forgetPasswordPage(){
         return view('forget_password');
     }
     function registration(Request $request){
@@ -70,5 +71,36 @@ class UserController extends Controller
     function logout(){
         Auth::guard('web')->logout();
         return redirect()->route('login');
+    }
+
+    // function forgetPassword(Request $request){
+    //     $token = hash('sha256', time());
+    //     $user = Auth::where('email', $request->email)->first();
+    //     if(!$user){
+    //         echo('Email not found');
+    //     }
+    //     $user->token = $token;
+    //     $user->update();
+
+    //     $reset_link = url('reset-password/'.$token.'/'.$request->email);
+
+    //     $message = 'Please click on this link: <br><a href="'.$reset_link.'">Click here</a>';
+    //      Mail::to($request->email)->send(new ResetPasswordMail($message));
+    //      echo 'Check your email';
+    // }
+
+
+    function forgetPassword(Request $request){
+        $token = hash('sha256', time());
+        $user = User::where('email', $request->email)->first(); // Use your User model instead of Auth
+        if(!$user){
+            echo('Email not found');
+        }
+        $user->token = $token;
+        $user->save(); // Use the save() method to update the user
+        $reset_link = url('reset-password/'.$token.'/'.$request->email);
+
+        $message = 'Please click on this link: <br><a href="'.$reset_link.'">Click here</a>';
+        Mail::to($request->email)->send(new ResetPasswordMail($message));
     }
 }
