@@ -40,7 +40,14 @@ class UserController extends Controller
     }
 
 
-    function registrationVerify(){
-
+    function registrationVerify($token, $email){
+        $user = User::where('token', $token)->where('email', $email)->first();
+        if(!$user){
+            return redirect('login');
+        }
+        $user->status = 'Active';
+        $user->token = '';
+        $user->update();
+        echo 'Registration verification is  successful';
     }
 }
