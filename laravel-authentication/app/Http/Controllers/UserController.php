@@ -66,4 +66,9 @@ class UserController extends Controller
             return redirect()->route('login');
         }
     }
+
+    function logout(){
+        Auth::guard('web')->logout();
+        return redirect()->route('login');
+    }
 }
