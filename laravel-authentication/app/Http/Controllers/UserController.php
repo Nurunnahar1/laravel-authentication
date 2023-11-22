@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Mail\UserMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -12,6 +13,9 @@ class UserController extends Controller
 {
     function index(){
         return view('home');
+    }
+    function dashboard(){
+        return view('dashboard');
     }
     function loginPage(){
         return view('login');
@@ -49,5 +53,17 @@ class UserController extends Controller
         $user->token = '';
         $user->update();
         echo 'Registration verification is  successful';
+    }
+    function login(Request $request){
+        $credentials = [
+            'email' => $request->email,
+            'password' =>$request->password,
+            'status' => 'Active',
+        ];
+        if(Auth::attempt($credentials)){
+            return redirect()->route('dashboard');
+        }else{
+            return redirect()->route('login');
+        }
     }
 }
