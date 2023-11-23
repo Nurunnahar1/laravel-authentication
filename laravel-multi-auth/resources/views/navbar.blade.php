@@ -9,23 +9,12 @@
                 </li>
 
                 @if (Auth::guard('web')->user())
-                        @if (Auth::guard('web')->user()->role == 2)
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url('logout') }}">Logout</a>
-                            </li>
-                        @endif
-                        @if (Auth::guard('web')->user()->role == 1)
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url('logout') }}">Logout</a>
-                        </li>
-                    @endif
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('logout') }}">Logout</a>
+                    </li>
                 @endif
 
 
