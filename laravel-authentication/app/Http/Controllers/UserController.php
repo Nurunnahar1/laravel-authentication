@@ -21,11 +21,24 @@ class UserController extends Controller
     function loginPage(){
         return view('login');
     }
+    function login(Request $request){
+        $credentials = [
+            'email' => $request->email,
+            'password' =>$request->password,
+            'status' => 'Active',
+        ];
+        if(Auth::attempt($credentials)){
+            return redirect()->route('dashboard');
+        }else{
+            return redirect()->route('login');
+        }
+    }
+    function logout(){
+        Auth::guard('web')->logout();
+        return redirect()->route('login');
+    }
     function registrationPage(){
         return view('registration');
-    }
-    function forgetPasswordPage(){
-        return view('forget_password');
     }
     function registration(Request $request){
         $token = hash('sha256', time());
@@ -43,8 +56,6 @@ class UserController extends Controller
          Mail::to($request->email)->send(new UserMail($message));
         echo 'Email is send';
     }
-
-
     function registrationVerify($token, $email){
         $user = User::where('token', $token)->where('email', $email)->first();
         if(!$user){
@@ -55,41 +66,9 @@ class UserController extends Controller
         $user->update();
         echo 'Registration verification is  successful';
     }
-    function login(Request $request){
-        $credentials = [
-            'email' => $request->email,
-            'password' =>$request->password,
-            'status' => 'Active',
-        ];
-        if(Auth::attempt($credentials)){
-            return redirect()->route('dashboard');
-        }else{
-            return redirect()->route('login');
-        }
+    function forgetPasswordPage(){
+        return view('forget_password');
     }
-
-    function logout(){
-        Auth::guard('web')->logout();
-        return redirect()->route('login');
-    }
-
-    // function forgetPassword(Request $request){
-    //     $token = hash('sha256', time());
-    //     $user = Auth::where('email', $request->email)->first();
-    //     if(!$user){
-    //         echo('Email not found');
-    //     }
-    //     $user->token = $token;
-    //     $user->update();
-
-    //     $reset_link = url('reset-password/'.$token.'/'.$request->email);
-
-    //     $message = 'Please click on this link: <br><a href="'.$reset_link.'">Click here</a>';
-    //      Mail::to($request->email)->send(new ResetPasswordMail($message));
-    //      echo 'Check your email';
-    // }
-
-
     function forgetPassword(Request $request){
         $token = hash('sha256', time());
         $user = User::where('email', $request->email)->first(); // Use your User model instead of Auth
@@ -103,4 +82,35 @@ class UserController extends Controller
         $message = 'Please click on this link: <br><a href="'.$reset_link.'">Click here</a>';
         Mail::to($request->email)->send(new ResetPasswordMail($message));
     }
+
+    function resetPasswordMethod($token,$email){
+        // echo $token;
+        $user = User::where('token', $token)->where('email', $email)->first();
+        if(!$user){
+            // dd('No user is found');
+            return redirect()->route('login');
+        }
+        return view('reset_password',compact('token', 'email'));
+    }
+
+    function resetPasswordSubmit(Request $request){
+        $user = User::where('token', $request->token)->where('email', $request->email)->first();
+        $user->token= '';
+        $user->password = Hash::make($request->new_password);
+        $user->update();
+        // echo 'Password is reset';
+        return redirect()->route('login')->with('success', 'Password has been reset successfully. Please login.');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 }
